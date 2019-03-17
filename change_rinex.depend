@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1552764369 source:l:\documentation\аспирантура\prog\cpp_change_meas\main.cpp
+	<iostream>
+	<fstream>
+
+1552764369 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\main.cpp
+	<iostream>
+	<fstream>
+
