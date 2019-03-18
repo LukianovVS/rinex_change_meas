@@ -43,23 +43,23 @@ int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rine
             throw 1;
 
         N = calc_length_string(fid);
-        fname_alm_gps = new char[N + 1];
-        fid.getline(fname_alm_gps, N + 1);
+        fname_alm_gps = new char[N];
+        fid.get(fname_alm_gps, N);
         goToNextString(fid);
 
         N = calc_length_string(fid);
-        fname_alm_gln = new char[N + 1];
-        fid.getline(fname_alm_gln, N + 1);
+        fname_alm_gln = new char[N];
+        fid.get(fname_alm_gln, N);
         goToNextString(fid);
 
         N = calc_length_string(fid);
-        fname_rinex_in = new char[N + 1];
-        fid.getline(fname_rinex_in, N + 1);
+        fname_rinex_in = new char[N];
+        fid.get(fname_rinex_in, N);
         goToNextString(fid);
 
         N = calc_length_string(fid);
-        fname_rinex_out = new char[N + 1];
-        fid.getline(fname_rinex_out, N + 1);
+        fname_rinex_out = new char[N];
+        fid.get(fname_rinex_out, N);
         goToNextString(fid);
 
         for (int k = 0; k < 3; k++)
@@ -94,7 +94,7 @@ int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rine
 
     cout << "dX, dY, dZ = ";
     for (int k = 0; k < 3; k++)
-        cout << dx[k];
+        cout << dx[k] << " ";
     cout << endl;
 
     return 0;
@@ -103,15 +103,15 @@ int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rine
 
 int calc_length_string(ifstream &fid)
 {
-    int n = -1;
+    int n_satrt = fid.tellg();
+    int n = 0;
     char ch;
     do
     {
         fid.get(ch);
-        cout << ch;
         n++;
     } while( ch != '\t' && ch != ' ' && ch != '\n' && ch != '#');
-    fid.seekg(-n, ios::cur);
+    fid.seekg(n_satrt, ios::beg);
     return n;
 }
 
@@ -119,14 +119,4 @@ void goToNextString(ifstream &fid)
 {
     fid.ignore(521, '\n');
     return;
-    char ch;
-    int n = 0;
-    do
-    {
-        n++;
-        fid.get(ch);
-        cout << ch;
-    }
-    while( ch != '\n' && n < 100);
-    cout << "read " << n << endl;
 }
