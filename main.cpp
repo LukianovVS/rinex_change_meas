@@ -1,13 +1,10 @@
 #include <iostream>
 #include <fstream>
 
+#include "input_interface.h"
+
 using namespace std;
 
-int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rinex_in, char *fname_rinex_out, double dx[]);
-int calc_length_string(ifstream &fid);
-void goToNextString(ifstream &fid);
-
-const char fname_config[] = "config.inf";
 
 int main()
 {
@@ -22,101 +19,10 @@ int main()
     if (config_processing(fname_alm_gps, fname_alm_gln, fname_alm_rinex_in, fname_alm_rinex_out, dxyz))
         return 1;
 
+	
+	
 
 
 
     return 0;
-}
-
-
-
-
-
-int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rinex_in, char *fname_rinex_out, double dx[])
-{
-    ifstream fid;
-    int N;
-    try
-    {
-        fid.open(fname_config);
-        if(!fid.is_open())
-            throw 1;
-
-        N = calc_length_string(fid);
-        fname_alm_gps = new char[N];
-        fid.get(fname_alm_gps, N);
-        goToNextString(fid);
-
-        N = calc_length_string(fid);
-        fname_alm_gln = new char[N];
-        fid.get(fname_alm_gln, N);
-        goToNextString(fid);
-
-        N = calc_length_string(fid);
-        fname_rinex_in = new char[N];
-        fid.get(fname_rinex_in, N);
-        goToNextString(fid);
-
-        N = calc_length_string(fid);
-        fname_rinex_out = new char[N];
-        fid.get(fname_rinex_out, N);
-        goToNextString(fid);
-
-        for (int k = 0; k < 3; k++)
-            fid >> dx[k];
-
-    }
-    catch (int n_err)
-    {
-        switch (n_err)
-        {
-        case 1:
-            {
-                cout << "Error: The file " << fname_config << " was not open!" << endl;
-                break;
-            }
-        case 2:
-        default:
-            {
-                cout << "Error: Unknown error. Check " << fname_config << " ." << endl;
-            }
-        }
-
-        fid.close();
-        return 1;
-    }
-    fid.close();
-
-    cout << "GPS alm  : " << fname_alm_gps << endl;
-    cout << "GLN alm  : " << fname_alm_gln << endl;
-    cout << "rinex in : " << fname_rinex_in << endl;
-    cout << "rinex out: " << fname_rinex_out << endl;
-
-    cout << "dX, dY, dZ = ";
-    for (int k = 0; k < 3; k++)
-        cout << dx[k] << " ";
-    cout << endl;
-
-    return 0;
-}
-
-
-int calc_length_string(ifstream &fid)
-{
-    int n_satrt = fid.tellg();
-    int n = 0;
-    char ch;
-    do
-    {
-        fid.get(ch);
-        n++;
-    } while( ch != '\t' && ch != ' ' && ch != '\n' && ch != '#');
-    fid.seekg(n_satrt, ios::beg);
-    return n;
-}
-
-void goToNextString(ifstream &fid)
-{
-    fid.ignore(521, '\n');
-    return;
 }
