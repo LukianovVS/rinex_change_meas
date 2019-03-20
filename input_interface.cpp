@@ -6,7 +6,7 @@ const char fname_config[] = "config.inf";
 using namespace std;
 
 int calc_length_string(ifstream &fid);
-void goToNextString(ifstream &fid);
+
 
 inline void error_fopen( const char *fname)
 {
@@ -15,7 +15,7 @@ inline void error_fopen( const char *fname)
 
 
 
-int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rinex_in, char *fname_rinex_out, double dx[])
+int config_processing(char fname_alm_gps[], char fname_alm_gln[], char fname_rinex_in[], char fname_rinex_out[], double dx[])
 {
     ifstream fid;
 	ifstream fid_test;
@@ -27,9 +27,8 @@ int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rine
             throw 1;
 		//													// alm gps
         N = calc_length_string(fid);
-        fname_alm_gps = new char[N];
         fid.get(fname_alm_gps, N);
-        goToNextString(fid);
+        fid.ignore(521, '\n');
 		
 		fid_test.open(fname_alm_gps);
 		if( fid_test.is_open() )
@@ -39,9 +38,8 @@ int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rine
 		
 		//													// alm gln
         N = calc_length_string(fid);
-        fname_alm_gln = new char[N];
         fid.get(fname_alm_gln, N);
-        goToNextString(fid);
+        fid.ignore(521, '\n');
 
 		fid_test.open(fname_alm_gln);
 		if( fid_test.is_open() )
@@ -51,9 +49,8 @@ int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rine
 		
 		//													// rinex input
         N = calc_length_string(fid);
-        fname_rinex_in = new char[N];
         fid.get(fname_rinex_in, N);
-        goToNextString(fid);
+        fid.ignore(521, '\n');
 	
 		fid_test.open(fname_rinex_in);
 		if( fid_test.is_open() )
@@ -64,9 +61,8 @@ int config_processing(char *fname_alm_gps, char *fname_alm_gln, char *fname_rine
 		
 		//													// rinex output
         N = calc_length_string(fid);
-        fname_rinex_out = new char[N];
         fid.get(fname_rinex_out, N);
-        goToNextString(fid);
+        fid.ignore(521, '\n');
 
 		
         for (int k = 0; k < 3; k++)
@@ -139,10 +135,4 @@ int calc_length_string(ifstream &fid)
     } while( ch != '\t' && ch != ' ' && ch != '\n' && ch != '#');
     fid.seekg(n_satrt, ios::beg);
     return n;
-}
-
-void goToNextString(ifstream &fid)
-{
-    fid.ignore(521, '\n');
-    return;
 }
