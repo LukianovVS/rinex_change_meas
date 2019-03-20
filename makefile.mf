@@ -1,0 +1,2 @@
+all:
+	cl main.cpp input_interface.cpp cls_Alm.cpp rinex.cpp

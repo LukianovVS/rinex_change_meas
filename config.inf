@@ -1,5 +1,5 @@
-L:\documentation\аспирантура\prog\matlab_change_rinex\sat\MCCJ_180915.agp      	# gps alm
-L:\documentation\аспирантура\prog\matlab_change_rinex\sat\MCCJ_180913.agl     	# gln alm
-L:\documentation\аспирантура\other\LabSat\LabS2580.18O      					# rinex in
-L:\documentation\аспирантура\other\LabSat\CppP2580.18O     						# rinex out
-100 0 0      																	# dx dy dz
+L:\science\downloaded_files\alm\MCCJ_180913.agp      	# gps alm
+L:\science\downloaded_files\alm\MCCJ_180913.agl     	# gln alm
+L:\science\other\pgc\PPP\rinex\LabSat\LabS2580.18O      # rinex in
+L:\science\other\pgc\PPP\rinex\LabSat\CppM2580.18O    	# rinex out
+100 0 0      						# dx dy dz
