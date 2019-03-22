@@ -1,2 +1,2 @@
 all:
-	cl main.cpp input_interface.cpp cls_Alm.cpp rinex.cpp
+	cl -EHsc main.cpp input_interface.cpp cls_Alm.cpp rinex.cpp
