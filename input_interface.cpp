@@ -5,13 +5,32 @@ const char fname_config[] = "config.inf";
 
 using namespace std;
 
-int calc_length_string(ifstream &fid);
+
+void read_inf(char fname[], ifstream &fid)
+{
+    char ch;
+    int fpos = 0;
+    while(1)
+    {
+        fid.get(ch);
+        if(ch == '\n' || ch == ' ' || ch == '\t' || ch == '#')
+            break;
+        fname[fpos++] = ch;
+    }
+
+    fname[fpos] = '\0';
+
+    if (ch != '\n')
+        fid.ignore(521, '\n');
+}
 
 
 inline void error_fopen( const char *fname)
 {
 	cout << "Error: Can't open a file \"" << fname <<"\"" << endl;
 }
+
+
 
 
 
@@ -26,46 +45,37 @@ int config_processing(char fname_alm_gps[], char fname_alm_gln[], char fname_rin
         if(!fid.is_open())
             throw 1;
 		//													// alm gps
-        N = calc_length_string(fid);
-        fid.get(fname_alm_gps, N);
-        fid.ignore(521, '\n');
-		
+        read_inf(fname_alm_gps, fid);
+
 		fid_test.open(fname_alm_gps);
 		if( fid_test.is_open() )
 			fid_test.close();
 		else
 			throw 2;
-		
+
 		//													// alm gln
-        N = calc_length_string(fid);
-        fid.get(fname_alm_gln, N);
-        fid.ignore(521, '\n');
+        read_inf(fname_alm_gln, fid);
 
 		fid_test.open(fname_alm_gln);
 		if( fid_test.is_open() )
 			fid_test.close();
 		else
 			throw 3;
-		
+
 		//													// rinex input
-        N = calc_length_string(fid);
-        fid.get(fname_rinex_in, N);
-        fid.ignore(521, '\n');
-	
+        read_inf(fname_rinex_in, fid);
+
 		fid_test.open(fname_rinex_in);
 		if( fid_test.is_open() )
 			fid_test.close();
 		else
 			throw 4;
-	
-		
-		//													// rinex output
-        N = calc_length_string(fid);
-        fid.get(fname_rinex_out, N);
-        fid.ignore(521, '\n');
 
-		
-        for (int k = 0; k < 3; k++)
+
+		//													// rinex output
+        read_inf(fname_rinex_out, fid);
+
+        for (int k = 0; k < 3; k++)                         // dx, dy, dz
             fid >> dx[k];
 
     }
@@ -123,16 +133,4 @@ int config_processing(char fname_alm_gps[], char fname_alm_gln[], char fname_rin
 }
 
 
-int calc_length_string(ifstream &fid)
-{
-    int n_satrt = fid.tellg();
-    int n = 0;
-    char ch;
-    do
-    {
-        fid.get(ch);
-        n++;
-    } while( ch != '\t' && ch != ' ' && ch != '\n' && ch != '#');
-    fid.seekg(n_satrt, ios::beg);
-    return n;
-}
+

@@ -32,7 +32,14 @@
 			<Add option="-g" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="cls_Alm.cpp" />
+		<Unit filename="cls_Alm.h" />
+		<Unit filename="input_interface.cpp" />
+		<Unit filename="input_interface.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="rconst.h" />
+		<Unit filename="rinex.cpp" />
+		<Unit filename="rinex.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

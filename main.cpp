@@ -18,23 +18,24 @@ int main()
     char fname_alm_rinex_out[SIZE_FNAME];
     double dxyz[3] = {0. , 0., 0.};
 	double xyz0[3];
-	
+
 	rinex::TYPES_OF_OBSERV typeObs[rinex::N_TYPES_OF_OBS];
 
-	
+
     if (config_processing(fname_alm_gps, fname_alm_gln, fname_alm_rinex_in, fname_alm_rinex_out, dxyz))
         return 1;
 
-	
-	int *gps_list; 
+
+	int *gps_list;
 	int *gln_list;
-	gps_list = new int [32]; 
+	gps_list = new int [32];
 	gln_list = new int [24];
-	
+
 	read_head_rinex(fname_alm_rinex_in, fname_alm_rinex_out, dxyz, gps_list, gln_list, typeObs, xyz0);
-	
-	delete gps_list, gln_list;
-	
-	
+
+	delete gps_list;
+	delete gln_list;
+
+
     return 0;
 }
