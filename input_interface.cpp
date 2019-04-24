@@ -1,5 +1,6 @@
+#include "rinex.h"
 #include <iostream>
-#include <fstream>
+
 
 const char fname_config[] = "config.inf";
 

@@ -7,56 +7,67 @@
 using namespace rinex;
 using namespace std;
 
-bool strfind(const char str1[], const char str2[]);
+const int rinex::MAX_TYPES_OF_OBS = 11;
 
-void read_head_rinex(char fname_alm_rinex_in[],
-						char fname_alm_rinex_out[],
-						double dxyz[], int gps_list[], int gln_list[],
-								rinex::TYPES_OF_OBSERV typeObs[], double xyz0[])
+rinex::TYPES_OF_OBSERV typeObs[rinex::MAX_TYPES_OF_OBS];
+
+
+
+const int max_size_string = 120;                                                                        // вообще, 80 символов (без '\n'), + символ конца строки ('\0'). Но в данном случае можно дать волю суеверию
+
+struct STR_RINEX
 {
-	ifstream fid_in;
-	ofstream fid_out;
-	char str[123];
+    char str[max_size_string];
+    int len;
+};
 
-	fid_in.open(fname_alm_rinex_in);
-	fid_out.open(fname_alm_rinex_out);
-	int n = 0;
-	do
-	{
-		fid_in.getline(str, 123);
-		fid_out << str << endl;
-	}while ( !strfind(str, "END OF HEADER") && (++n < 19) );
-	fid_in.close();
-	fid_out.close();
+#define _END_OF_HEADER_ ("END OF HEADER")
+#define _APPROX_POSITION_XYZ_ ("APPROX POSITION XYZ")
+#define _TYPES_OF_OBSERV_ ("TYPES OF OBSERV")
+
+bool str_rinex_compare(STR_RINEX str1, STR_RINEX str2)
+{
+    if (!strcmp(&str1.str[str1.len - str2.len], str2.str))
+        return true;
+    else
+        return false;
+}
+
+void read_head_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[], double dxyz[])
+{
+    STR_RINEX str_cur           = {""                   , 0                             };
+    const STR_RINEX str_eoh     = {_END_OF_HEADER_      , strlen(_END_OF_HEADER_)       };
+    const STR_RINEX str_xyz     = {_APPROX_POSITION_XYZ_, strlen(_APPROX_POSITION_XYZ_) };
+    const STR_RINEX str_tobs    = {_TYPES_OF_OBSERV_    , strlen(_TYPES_OF_OBSERV_)     };
+
+
+    do
+    {
+        fid_in.getline(str_cur.str, max_size_string);
+
+        str_cur.len = strlen(str_cur.str);
+
+        if ( str_rinex_compare(str_cur, str_xyz) )
+        {
+            // пересчёт координат
+        }
+        else if ( str_rinex_compare(str_cur, str_tobs) )
+        {
+            // копируем измерения в нужном порядке
+        }
+        else
+        {
+            fid_out << str_cur.str << endl;
+            if ( str_rinex_compare(str_cur, str_eoh) )
+                break;
+        }
+
+    }while(1);
 }
 
 
 
 
-bool strfind(const char str1[], const char str2[])
-{
-	int N1 = strlen(str1);
-	int N2 = strlen(str2);
 
-	if (N2 > N1) return 0;
-	int dN = N1 - N2 + 1;
-
-	char *str_copy = new char[N2 + 1];
-	str_copy[N2 + 1] = '\0';
-
-	cout << "N = " << N1 << " " << N2 << endl;
-
-	for( int k = 0; k < dN; k++)
-	{
-		strncpy(str_copy, &str1[k], sizeof(char) * N2);
-		str_copy[N2 + 1] = '\0';
-		cout << &str1[k] << " vs " << str2 << endl;
-		cout << str_copy << endl;
-		if (!strcmp(&str1[k], str2))
-			return 1;
-	}
-	delete [] str_copy;
-	return 0;
-}
 
 

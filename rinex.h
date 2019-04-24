@@ -1,8 +1,12 @@
+#ifndef RENEX_H
+#define RENEX_H
+
+#include <fstream>
 
 namespace rinex
 {
-	const int N_TYPES_OF_OBS = 10;
-	enum TYPES_OF_OBSERV {C1, C2, L1, L2, S1, S2, D1, D2, P1, P2, NoObs};
+    extern const int MAX_TYPES_OF_OBS;
+	enum TYPES_OF_OBSERV {C1 = 0, C2, L1, L2, S1, S2, D1, D2, P1, P2, NoObs};
 }
 
     /*
@@ -11,4 +15,6 @@ namespace rinex
     * 1. Переписать шапку (шапка практически не  меняется, меняется только оценка координат, что, по идеи формальность, и не важно).
     * 2. Взять из шапки всё информацию, необходимую для дальнейшей работы.
     *************************************************************************************************************************************************************************/
-void read_head_rinex(char fname_alm_rinex_in[], char fname_alm_rinex_out[], double dxyz[], int gps_list[], int gln_list[], rinex::TYPES_OF_OBSERV typeObs[], double xyz0[]);
+void read_head_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[], double dxyz[]);
+
+#endif
