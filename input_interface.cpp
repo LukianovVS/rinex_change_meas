@@ -38,7 +38,7 @@ int config_processing(char fname_alm_gps[], char fname_alm_gln[], char fname_rin
 {
     ifstream fid;
 	ifstream fid_test;
-    int N;
+
     try
     {
         fid.open(fname_config);
