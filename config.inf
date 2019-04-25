@@ -1,5 +1,5 @@
-L:\documentation\postgraduateCourse\nav_data\MCCJ_180913.agp      	# gps alm
-L:\documentation\postgraduateCourse\nav_data\MCCJ_180913.agl     	# gln alm
-L:\documentation\postgraduateCourse\nav_data\LabS2580.18O      		# rinex in
-L:\documentation\postgraduateCourse\nav_data\CppM2580.18O    		# rinex out
-100 0 0      														# dx dy dz
+.\example_of_files\MCCJ_180913.agp        # gps alm
+.\example_of_files\MCCJ_180913.agl        # gln alm
+.\example_of_files\LabS2580.18O           # rinex in
+.\example_of_files\CppM2580.18O           # rinex out
+100 0 0                                   # dx dy dz
