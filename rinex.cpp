@@ -2,14 +2,11 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <cctype>
 
-
-using namespace rinex;
 using namespace std;
 
-const int rinex::MAX_TYPES_OF_OBS = 11;
-
-rinex::TYPES_OF_OBSERV typeObs[rinex::MAX_TYPES_OF_OBS];
+RINEX_TYPE rinexType;
 
 
 
@@ -49,11 +46,17 @@ void read_head_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
 
         if ( str_rinex_compare(str_cur, str_xyz) )
         {
-            // пересчёт координат
+			double xyz_new[3];
+			fid_in.seekg(-str_cur.len, ios);
+			// ... 
+			
+			fid_in.getline(str_cur.str, max_size_string);
+			
         }
         else if ( str_rinex_compare(str_cur, str_tobs) )
         {
-            // копируем измерения в нужном порядке
+            rinexType.getListOfTypes();
+			fid_out << str_cur.str;
         }
         else
         {
@@ -66,8 +69,55 @@ void read_head_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
 }
 
 
+RINEX_TYPE::RINEX_TYPE()
+{
+  for (int k = 0; k < LIST_TYPES_OF_OBSERV::EndOfList; k++)
+	  this->list[k] = EndOfList;
+  this->NumUsedType = 0;
+}
 
-
+void RINEX_TYPE::getListOfTypes(char str[])
+{
+  int N = strlen(str); 
+  char ch[3] = "X1";
+  for (int k = 0; k < N; k++)
+  {
+    if ( isalpha(str[k]) )
+	{
+	  ch[0] = str[k  ];
+	  ch[1] = str[++k];
+	  
+	  if ( !strcmp(ch, "C1") )
+	    this->list[this->NumUsedType] = C1;
+	  else if ( !strcmp(ch, "C2") )
+	    this->list[this->NumUsedType] = C2;
+	  else if ( !strcmp(ch, "L1") )
+	    this->list[this->NumUsedType] = L1;
+	  else if ( !strcmp(ch, "L2") )
+	    this->list[this->NumUsedType] = L2;
+	  else if ( !strcmp(ch, "S1") )
+	    this->list[this->NumUsedType] = S1;
+	  else if ( !strcmp(ch, "S2") )
+	    this->list[this->NumUsedType] = S2;
+	  else if ( !strcmp(ch, "D1") )
+	    this->list[this->NumUsedType] = D1;
+	  else if ( !strcmp(ch, "D2") )
+	    this->list[this->NumUsedType] = D2;
+	  else if ( !strcmp(ch, "P1") )
+	    this->list[this->NumUsedType] = P1;
+	  else if ( !strcmp(ch, "P2") )
+	    this->list[this->NumUsedType] = P2;
+	  else
+	  {
+	    this->list[this->NumUsedType] = NoObs;
+		cout << "error: unknow type " << ch << endl;
+	  }
+	  this->NumUsedType++;
+	}
+	else if (str[k] == '#')
+		break;
+  }
+}
 
 
 
