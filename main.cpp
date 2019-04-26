@@ -10,26 +10,26 @@ using namespace std;
 
 int main()
 {
-    //----------------------------------------------------------------------------------------------------------------------// конфигурация
+    //----------------------------------------------------------------------------------------------------------------------// РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ
     /*
-    Имена файлов
+    РРјРµРЅР° С„Р°Р№Р»РѕРІ
     */
-    char fname_alm_gps[SIZE_FNAME];                                                                                         // альманах GPS
-    char fname_alm_gln[SIZE_FNAME];                                                                                         // альманах ГЛОНАСС
-    char fname_alm_rinex_in[SIZE_FNAME];                                                                                    // rinex с исходными измерениями
-    char fname_alm_rinex_out[SIZE_FNAME];                                                                                   // выходной файл
-    double dxyz[3] = {0. , 0., 0.};                                                                                         // смещение, которое нужно сделать (увод координат)
-	double xyz0[3];                                                                                                         // координаты потребителя. Пока беруться из входного rinex файла
+    char fname_alm_gps[SIZE_FNAME];                                                                                         // Р°Р»СЊРјР°РЅР°С… GPS
+    char fname_alm_gln[SIZE_FNAME];                                                                                         // Р°Р»СЊРјР°РЅР°С… Р“Р›РћРќРђРЎРЎ
+    char fname_alm_rinex_in[SIZE_FNAME];                                                                                    // rinex СЃ РёСЃС…РѕРґРЅС‹РјРё РёР·РјРµСЂРµРЅРёСЏРјРё
+    char fname_alm_rinex_out[SIZE_FNAME];                                                                                   // РІС‹С…РѕРґРЅРѕР№ С„Р°Р№Р»
+    double dxyz[3] = {0. , 0., 0.};                                                                                         // СЃРјРµС‰РµРЅРёРµ, РєРѕС‚РѕСЂРѕРµ РЅСѓР¶РЅРѕ СЃРґРµР»Р°С‚СЊ (СѓРІРѕРґ РєРѕРѕСЂРґРёРЅР°С‚)
+	double xyz0[3];                                                                                                         // РєРѕРѕСЂРґРёРЅР°С‚С‹ РїРѕС‚СЂРµР±РёС‚РµР»СЏ. РџРѕРєР° Р±РµСЂСѓС‚СЊСЃСЏ РёР· РІС…РѕРґРЅРѕРіРѕ rinex С„Р°Р№Р»Р°
 
 
 
-    if (config_processing(fname_alm_gps, fname_alm_gln, fname_alm_rinex_in, fname_alm_rinex_out, dxyz))                     // читаем входные данные (обработка .inf файла)
+    if (config_processing(fname_alm_gps, fname_alm_gln, fname_alm_rinex_in, fname_alm_rinex_out, dxyz))                     // С‡РёС‚Р°РµРј РІС…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ (РѕР±СЂР°Р±РѕС‚РєР° .inf С„Р°Р№Р»Р°)
         return 1;
 
-    ifstream fid_in (fname_alm_rinex_in );                                                                                  // файл входнной
-    ofstream fid_out(fname_alm_rinex_out);                                                                                  // файл выходнной
+    ifstream fid_in (fname_alm_rinex_in );                                                                                  // С„Р°Р№Р» РІС…РѕРґРЅРЅРѕР№
+    ofstream fid_out(fname_alm_rinex_out);                                                                                  // С„Р°Р№Р» РІС‹С…РѕРґРЅРЅРѕР№
 
-	read_head_rinex(fid_out, fid_in, xyz0, dxyz);                                                                           // Переписываем шапку rinex файла (из старого в новый) и берём необходимую информацию. Подробнее см. в header файл
+	read_head_rinex(fid_out, fid_in, xyz0, dxyz);                                                                           // РџРµСЂРµРїРёСЃС‹РІР°РµРј С€Р°РїРєСѓ rinex С„Р°Р№Р»Р° (РёР· СЃС‚Р°СЂРѕРіРѕ РІ РЅРѕРІС‹Р№) Рё Р±РµСЂС‘Рј РЅРµРѕР±С…РѕРґРёРјСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ. РџРѕРґСЂРѕР±РЅРµРµ СЃРј. РІ header С„Р°Р№Р»
 
 
 
