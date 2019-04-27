@@ -3,7 +3,7 @@
 	<iostream>
 	<fstream>
 
-1556370385 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\main.cpp
+1556380833 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\main.cpp
 	<iostream>
 	<fstream>
 	"input_interface.h"
@@ -17,22 +17,23 @@
 
 1556363414 l:\documentation\postgraduatecourse\prog\cpp_change_meas\cls_alm.h
 
-1556363414 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\input_interface.cpp
+1556390076 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\input_interface.cpp
 	"rinex.h"
 	<iostream>
 
-1556363652 l:\documentation\postgraduatecourse\prog\cpp_change_meas\rinex.h
+1556383902 l:\documentation\postgraduatecourse\prog\cpp_change_meas\rinex.h
 	<fstream>
 
 1556363414 l:\documentation\postgraduatecourse\prog\cpp_change_meas\input_interface.h
 
-1556369627 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\rinex.cpp
-	"rinex.h"
+1556391939 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\rinex.cpp
 	<fstream>
 	<iostream>
 	<cstring>
 	<cctype>
-	<cmath>
+	"rinex.h"
+	"string/charstring.h"
+	"satellite.h"
 
 1556363414 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\almanac\cls_alm.cpp
 	"cls_Alm.h"
@@ -41,10 +42,17 @@
 
 1556363414 l:\documentation\postgraduatecourse\prog\cpp_change_meas\almanac\cls_alm.h
 
-1556371186 l:\documentation\postgraduatecourse\prog\cpp_change_meas\satellite.h
+1556383619 l:\documentation\postgraduatecourse\prog\cpp_change_meas\satellite.h
 	"almanac/cls_Alm.h"
 
 1556370816 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\satellite.cpp
 	"satellite.h"
 	<fstream>
+
+1556391656 l:\documentation\postgraduatecourse\prog\cpp_change_meas\string\charstring.h
+	<fstream>
+
+1556391656 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\string\charstring.cpp
+	"charstring.h"
+	<cmath>
 

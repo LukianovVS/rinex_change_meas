@@ -18,6 +18,9 @@ public:
 
   void getListOfTypes(char str[]);
 
+  // interface functions
+  int inline getNumUsedTypes()               { return this->NumUsedType; }
+  LIST_TYPES_OF_OBSERV inline getType(int k) { return this->list[k];     }
 
 };
 
@@ -29,5 +32,8 @@ public:
     * 2. Взять из шапки всё информацию, необходимую для дальнейшей работы.
     *************************************************************************************************************************************************************************/
 void read_head_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[], double dxyz[]);
+
+void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[], double dxyz[]);
+
 
 #endif

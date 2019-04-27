@@ -1,17 +1,22 @@
-#include "rinex.h"
+
 #include <fstream>
 #include <iostream>
 #include <cstring>
 #include <cctype>
-#include <cmath>
+
+
+#include "rinex.h"
+#include "string/charstring.h"
+#include "satellite.h"
 
 using namespace std;
 
 RINEX_TYPE rinexType;
 
 
+//----------------------------------------------------------------------------------------------------------------------// Шапка
 
-const int max_size_string = 120;                                                                                        // РІРѕРѕР±С‰Рµ, 80 СЃРёРјРІРѕР»РѕРІ (Р±РµР· '\n'), + СЃРёРјРІРѕР» РєРѕРЅС†Р° СЃС‚СЂРѕРєРё ('\0'). РќРѕ РІ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ РјРѕР¶РЅРѕ РґР°С‚СЊ РІРѕР»СЋ СЃСѓРµРІРµСЂРёСЋ
+const int max_size_string = 120;                                                                                        // вообще, 80 символов (без '\n'), + символ конца строки ('\0'). Но в данном случае можно дать волю суеверию
 
 struct STR_RINEX
 {
@@ -29,29 +34,6 @@ bool str_rinex_compare(STR_RINEX str1, STR_RINEX str2)
     return true;
   else
     return false;
-}
-
-/*
-  * РљРѕРјРїРёР»СЏС‚РѕСЂ MinGW РѕСЃР»РѕР¶РЅСЏРµС‚ РїСѓС‚СЊ СЂРµС€РµРЅРёСЏ. РџРѕСЌС‚РѕРјСѓ Р±С‹Р»Р° РЅР°РїРёСЃР°РЅР° С„СѓРЅРєС†РёСЏ РґР»СЏ С‡С‚РµРЅРёСЏ float С‡РёСЃРµР»
-*/
-double getFloat(char str[], int N = 14)
-{
-    double x = 0;
-    int j = 0;
-    int fp = 0;
-    for (int k = 0; k < N; k++)
-    {
-      if (fp)
-        j++;
-
-      if (str[k] == ' ')
-        continue;
-      else if( str[k] == '.')
-        fp = 1;
-      else
-        x = x*10 + (str[k] - '0');
-    }
-    return x / pow(10, j);
 }
 
 
@@ -77,7 +59,7 @@ void read_head_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
       fid_out.unsetf(ios::floatfield);
       for (int k = 0; k < 3; k++)
       {
-        xyz0[k] = getFloat(&str_cur.str[14*k], 14);
+        xyz0[k] = str2float(&str_cur.str[14*k], 14);
         xyz_new[k] = xyz0[k] + dxyz[k];
         fid_out.setf(ios::fixed);
         fid_out.precision(4);
@@ -156,4 +138,116 @@ void RINEX_TYPE::getListOfTypes(char str[])
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------// Основная часть файла
 
+void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[], double dxyz[])
+{
+
+  int partOfBody = 0;
+  char str[max_size_string];
+  int Nsat = 0;
+  SAT_ID sat_list[_MAX_SAT_];
+
+  fid_out.unsetf(ios::floatfield);
+  fid_out.setf(ios::fixed);
+
+  while (!fid_in.eof())
+  {
+    fid_in.getline(str, max_size_string);
+    if (partOfBody == 0)                                                                                                // читаем заголовок. Переписываем его без изменений и узнаём в каком порядке идут спутники и их количество
+    {
+      fid_out << str << endl;
+      Nsat = str2int(&str[30], 2);
+
+      int n = 0;
+      for (int k_sat = 0; k_sat < Nsat; k_sat++)
+      {
+        if (k_sat >= 12)
+        {
+          if (k_sat == 12)
+          {
+            fid_in.getline(str, max_size_string);
+            fid_out << str << endl;
+          }
+          n = (k_sat - 12) * 3 + 32;
+        }
+        else
+          n = k_sat * 3 + 32;
+
+        sat_list[k_sat].sys = str[n];
+        sat_list[k_sat].num = str2int(&str[n+1], 2);
+      }
+
+      partOfBody = 1;
+    }
+    else                                                                                                                // меняем измерения
+    {
+      int k_in_string = 0;
+      double meas;
+      char LLIandPower[3] = "01";
+
+      for (int k_sat = 0; k_sat < Nsat; k_sat++)
+      {
+        for (int k_type = 0; k_type < rinexType.getNumUsedTypes(); k_type++)
+        {
+          if (k_in_string == 5)
+          {
+            fid_in.getline(str, max_size_string);
+            fid_out << endl;
+            k_in_string = 0;
+          }
+
+          int flag_empty = 0;
+          meas            = str2float(&str[k_in_string * 16], 14, &flag_empty);
+          LLIandPower[0]  = str[k_in_string * 16 + 14];
+          LLIandPower[1]  = str[k_in_string * 16 + 15];
+
+          k_in_string ++;
+
+          switch (rinexType.getType(k_type))
+          {
+            case C1:
+            case C2:
+            case P1:
+            case P2:
+            {
+
+              break;
+            }
+            case L1:
+            {
+
+              break;
+            }
+            case L2:
+            {
+
+              break;
+            }
+
+          }
+
+          fid_out.width(14);
+          fid_out.precision(3);
+          if (flag_empty)
+            fid_out << ' ';
+          else
+            fid_out << meas;
+          fid_out.flush();
+          fid_out.width(2);
+          fid_out << LLIandPower;
+          fid_out.flush();
+
+        }
+
+      }
+      fid_out << '\n';
+      partOfBody = 0;
+    }
+
+
+  }
+
+
+
+}

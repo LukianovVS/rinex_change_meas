@@ -34,6 +34,8 @@ int main()
 
 	read_head_rinex(fid_out, fid_in, xyz0, dxyz);                                                                         // Переписываем шапку rinex файла (из старого в новый) и берём необходимую информацию. Подробнее см. в header файл
 
+	read_body_rinex(fid_out, fid_in, xyz0, dxyz);
+
 
 
   return 0;
