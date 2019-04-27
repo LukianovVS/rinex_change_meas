@@ -3,7 +3,34 @@
 	<iostream>
 	<fstream>
 
-1552764369 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\main.cpp
+1556363414 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\main.cpp
 	<iostream>
 	<fstream>
+	"input_interface.h"
+	"cls_Alm.h"
+	"rinex.h"
+
+1556363414 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\cls_alm.cpp
+	"cls_Alm.h"
+	<fstream>
+	<iostream>
+
+1556363414 l:\documentation\postgraduatecourse\prog\cpp_change_meas\cls_alm.h
+
+1556363414 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\input_interface.cpp
+	"rinex.h"
+	<iostream>
+
+1556363652 l:\documentation\postgraduatecourse\prog\cpp_change_meas\rinex.h
+	<fstream>
+
+1556363414 l:\documentation\postgraduatecourse\prog\cpp_change_meas\input_interface.h
+
+1556368490 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\rinex.cpp
+	"rinex.h"
+	<fstream>
+	<iostream>
+	<cstring>
+	<cctype>
+	<cmath>
 

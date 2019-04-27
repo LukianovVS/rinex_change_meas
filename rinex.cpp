@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstring>
 #include <cctype>
+#include <cmath>
 
 using namespace std;
 
@@ -10,7 +11,7 @@ RINEX_TYPE rinexType;
 
 
 
-const int max_size_string = 120;                                                                        // РІРѕРѕР±С‰Рµ, 80 СЃРёРјРІРѕР»РѕРІ (Р±РµР· '\n'), + СЃРёРјРІРѕР» РєРѕРЅС†Р° СЃС‚СЂРѕРєРё ('\0'). РќРѕ РІ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ РјРѕР¶РЅРѕ РґР°С‚СЊ РІРѕР»СЋ СЃСѓРµРІРµСЂРёСЋ
+const int max_size_string = 120;                                                                        // вообще, 80 символов (без '\n'), + символ конца строки ('\0'). Но в данном случае можно дать волю суеверию
 
 struct STR_RINEX
 {
@@ -24,61 +25,96 @@ struct STR_RINEX
 
 bool str_rinex_compare(STR_RINEX str1, STR_RINEX str2)
 {
-    if (!strcmp(&str1.str[str1.len - str2.len], str2.str))
-        return true;
-    else
-        return false;
+  if (!strcmp(&str1.str[str1.len - str2.len], str2.str))
+    return true;
+  else
+    return false;
 }
+
+/*
+  * Компилятор MinGW осложняет путь решения. Поэтому была написана функция для чтения float чисел
+*/
+double getFloat(char str[], int N = 14)
+{
+    double x = 0;
+    int j = 0;
+    int fp = 0;
+    for (int k = 0; k < N; k++)
+    {
+      if (fp)
+        j++;
+
+      if (str[k] == ' ')
+        continue;
+      else if( str[k] == '.')
+        fp = 1;
+      else
+        x = x*10 + (str[k] - '0');
+    }
+    return x / pow(10, j);
+}
+
+
 
 void read_head_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[], double dxyz[])
 {
-    STR_RINEX str_cur           = {""                   , 0                             };
-    const STR_RINEX str_eoh     = {_END_OF_HEADER_      , strlen(_END_OF_HEADER_)       };
-    const STR_RINEX str_xyz     = {_APPROX_POSITION_XYZ_, strlen(_APPROX_POSITION_XYZ_) };
-    const STR_RINEX str_tobs    = {_TYPES_OF_OBSERV_    , strlen(_TYPES_OF_OBSERV_)     };
+  STR_RINEX str_cur           = {""                   , 0                             };
+  const STR_RINEX str_eoh     = {_END_OF_HEADER_      , strlen(_END_OF_HEADER_)       };
+  const STR_RINEX str_xyz     = {_APPROX_POSITION_XYZ_, strlen(_APPROX_POSITION_XYZ_) };
+  const STR_RINEX str_tobs    = {_TYPES_OF_OBSERV_    , strlen(_TYPES_OF_OBSERV_)     };
 
 
-    do
+  do
+  {
+    fid_in.getline(str_cur.str, max_size_string);
+
+    str_cur.len = strlen(str_cur.str);
+
+    if ( str_rinex_compare(str_cur, str_xyz) )
     {
-        fid_in.getline(str_cur.str, max_size_string);
+      double xyz_new[3];
 
-        str_cur.len = strlen(str_cur.str);
+      fid_out.unsetf(ios::floatfield);
+      for (int k = 0; k < 3; k++)
+      {
+        xyz0[k] = getFloat(&str_cur.str[14*k], 14);
+        xyz_new[k] = xyz0[k] + dxyz[k];
+        fid_out.setf(ios::fixed);
+        fid_out.precision(4);
+        fid_out.width(14);
+        fid_out <<  xyz_new[k];
+      }
 
-        if ( str_rinex_compare(str_cur, str_xyz) )
-        {
-			double xyz_new[3];
-			fid_in.seekg(-str_cur.len, ios);
-			// ... 
-			
-			fid_in.getline(str_cur.str, max_size_string);
-			
-        }
-        else if ( str_rinex_compare(str_cur, str_tobs) )
-        {
-            rinexType.getListOfTypes();
-			fid_out << str_cur.str;
-        }
-        else
-        {
-            fid_out << str_cur.str << endl;
-            if ( str_rinex_compare(str_cur, str_eoh) )
-                break;
-        }
+      fid_out << "                  APPROX POSITION XYZ" << endl;
 
-    }while(1);
+
+    }
+    else if ( str_rinex_compare(str_cur, str_tobs) )
+    {
+      rinexType.getListOfTypes(str_cur.str);
+      fid_out << str_cur.str << endl;
+    }
+    else
+    {
+      fid_out << str_cur.str << endl;
+      if ( str_rinex_compare(str_cur, str_eoh) )
+        break;
+    }
+
+  }while(1);
 }
 
 
 RINEX_TYPE::RINEX_TYPE()
 {
-  for (int k = 0; k < LIST_TYPES_OF_OBSERV::EndOfList; k++)
+  for (int k = 0; k < EndOfList; k++)
 	  this->list[k] = EndOfList;
   this->NumUsedType = 0;
 }
 
 void RINEX_TYPE::getListOfTypes(char str[])
 {
-  int N = strlen(str); 
+  int N = strlen(str);
   char ch[3] = "X1";
   for (int k = 0; k < N; k++)
   {
@@ -86,7 +122,7 @@ void RINEX_TYPE::getListOfTypes(char str[])
 	{
 	  ch[0] = str[k  ];
 	  ch[1] = str[++k];
-	  
+
 	  if ( !strcmp(ch, "C1") )
 	    this->list[this->NumUsedType] = C1;
 	  else if ( !strcmp(ch, "C2") )
