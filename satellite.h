@@ -10,8 +10,8 @@
 
 
 extern ALM_GPS almGps[_MAX_GPS_SAT_];
+extern int LS;
 
-void read_almanac (char fname_alm_gps[], char fname_alm_gln[]);
 
 typedef struct
 {
@@ -19,6 +19,19 @@ typedef struct
   int num;
 } SAT_ID;
 
+typedef struct
+{
+  int year;
+  int month;
+  int day;
+  int h;
+  int m;
+  double sec;
+} TIME;
+
+
+void read_almanac (char fname_alm_gps[], char fname_alm_gln[]);
+double calc_dr(SAT_ID sat, TIME time);
 
 
 #endif // SATELLITE_H

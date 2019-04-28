@@ -3,7 +3,7 @@
 #include <fstream>
 
 ALM_GPS almGps[_MAX_GPS_SAT_];
-
+int LS = 0;
 
 using namespace std;
 
@@ -15,4 +15,13 @@ void read_almanac (char fname_alm_gps[], char fname_alm_gln[])
   }
 
   return;
+}
+
+double calc_dr(SAT_ID sat, TIME time)
+{
+  double dr = 0;
+
+
+
+  return dr;
 }

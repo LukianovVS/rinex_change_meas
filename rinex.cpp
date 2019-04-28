@@ -27,6 +27,7 @@ struct STR_RINEX
 #define _END_OF_HEADER_ ("END OF HEADER")
 #define _APPROX_POSITION_XYZ_ ("APPROX POSITION XYZ")
 #define _TYPES_OF_OBSERV_ ("TYPES OF OBSERV")
+#define _LEAP_SECONDS_ ("LEAP SECONDS")
 
 bool str_rinex_compare(STR_RINEX str1, STR_RINEX str2)
 {
@@ -44,6 +45,7 @@ void read_head_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
   const STR_RINEX str_eoh     = {_END_OF_HEADER_      , strlen(_END_OF_HEADER_)       };
   const STR_RINEX str_xyz     = {_APPROX_POSITION_XYZ_, strlen(_APPROX_POSITION_XYZ_) };
   const STR_RINEX str_tobs    = {_TYPES_OF_OBSERV_    , strlen(_TYPES_OF_OBSERV_)     };
+  const STR_RINEX str_ls      = {_LEAP_SECONDS_       , strlen(_LEAP_SECONDS_)        };
 
 
   do
@@ -74,6 +76,11 @@ void read_head_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
     else if ( str_rinex_compare(str_cur, str_tobs) )
     {
       rinexType.getListOfTypes(str_cur.str);
+      fid_out << str_cur.str << endl;
+    }
+    else if ( str_rinex_compare(str_cur, str_ls) )
+    {
+      LS = str2int( str_cur.str, 12);
       fid_out << str_cur.str << endl;
     }
     else
@@ -147,6 +154,7 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
   char str[max_size_string];
   int Nsat = 0;
   SAT_ID sat_list[_MAX_SAT_];
+  TIME time;
 
   fid_out.unsetf(ios::floatfield);
   fid_out.setf(ios::fixed);
@@ -157,6 +165,17 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
     if (partOfBody == 0)                                                                                                // читаем заголовок. Переписываем его без изменений и узнаём в каком порядке идут спутники и их количество
     {
       fid_out << str << endl;
+
+      if (str[30] != '0')
+        continue;
+
+      time.year   = 2000 + str2int(str +  1,  2);
+      time.month  =        str2int(str +  4,  2);
+      time.day    =        str2int(str +  7,  2);
+      time.h      =        str2int(str + 10,  2);
+      time.m      =        str2int(str + 13,  2);
+      time.sec    =      str2float(str + 16, 10);
+
       Nsat = str2int(&str[30], 2);
 
       int n = 0;
@@ -188,6 +207,8 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
 
       for (int k_sat = 0; k_sat < Nsat; k_sat++)
       {
+        double dR = calc_dr(sat_list[k_sat], time);
+
         for (int k_type = 0; k_type < rinexType.getNumUsedTypes(); k_type++)
         {
           if (k_in_string == 5)
