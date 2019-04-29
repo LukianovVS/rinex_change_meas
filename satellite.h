@@ -30,6 +30,15 @@ typedef struct
 } TIME;
 
 
+typedef struct
+{
+  int week;
+  double tow;
+} TIME_GPS;
+
+
+void utc2gps(TIME_GPS *tgps, TIME tutc, const int LS);
+
 void read_almanac (char fname_alm_gps[], char fname_alm_gln[]);
 double calc_dr(SAT_ID sat, TIME time);
 

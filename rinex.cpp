@@ -176,6 +176,9 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
       time.m      =        str2int(str + 13,  2);
       time.sec    =      str2float(str + 16, 10);
 
+      utc2gps(time_gps, time, LS);
+
+
       Nsat = str2int(&str[30], 2);
 
       int n = 0;
