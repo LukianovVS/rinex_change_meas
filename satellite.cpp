@@ -73,7 +73,7 @@ double calc_dr(SAT_ID sat, TIME_GPS time, double xyz_receiver[], double dxyz[])
     time.week--;
   }
 
-  alm->calc_XV();
+  alm->calcPosition();
   alm->get_x(xyz_sat);
 
 

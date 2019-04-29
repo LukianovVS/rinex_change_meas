@@ -2,10 +2,13 @@
 
 namespace ALM_CONST
 {
+  const int _SEC_DAY_  = 24 * 60 * 60;
+  const int _SEC_WEEK_ = 7 * _SEC_DAY_;
+
   typedef struct
   {
     double M;
-    double We;
+    double OmE;
   } GPS_CONST;
 
   extern const GPS_CONST gpsConst;
@@ -18,7 +21,7 @@ protected:
 	double V[3];
 public:
 
-	virtual void calc_XV() = 0;
+	virtual void calcPosition(int week, double tow) = 0;
 	virtual void read_alm(char *fname, int N) = 0;
 // 															// interface
 	void inline get_x(double *x) {x[0] = xyz[0]; x[1] = xyz[1]; x[2] = xyz[2];}
@@ -45,8 +48,11 @@ private:
 	double E;
 	double SQRT_A;
 	double M0;
+	//  next parameters does not readed of the almanac
+	double A;
+	double n0
 public:
-	void calc_XV();
+	void calcPosition(int week, double tow);
 	void read_alm(char *fname, int N);
 
 	void dbg();
