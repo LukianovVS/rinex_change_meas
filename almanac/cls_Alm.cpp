@@ -3,22 +3,12 @@
 #include <iostream>
 
 using namespace std;
+using namespace ALM_CONST;
 
-inline void BASE_ALM::get_x(double *x)
-{
-	x[0] = this->xyz[0];
-	x[1] = this->xyz[1];
-	x[2] = this->xyz[2];
-}
+const GPS_CONST gpsConst = {3.986005e14, 7.2921151467e-5};
 
-inline void BASE_ALM::get_v(double *v)
-{
-	v[0] = this->V[0];
-	v[1] = this->V[1];
-	v[2] = this->V[2];
-}
 
-void ALM_GPS::calc_XV() 
+void ALM_GPS::calc_XV()
 {
 	this->E = this->E + 1.;
 }
@@ -48,7 +38,7 @@ void ALM_GPS::read_alm(char *fname, int Sat)
 					if (cur_n != Sat)
 						fid.ignore(521, '\n');
 					else
-					{		
+					{
 						satFound = 1;
 						fid >> this->Health;
 						fid >> this->week;
@@ -83,15 +73,15 @@ void ALM_GPS::read_alm(char *fname, int Sat)
 		if(satFound)
 			break;
 	}
-	
+
 	fid.close();
-	
+
 	if (!satFound)
-	{	
+	{
 		this->Health = 1;
 		cout << "warning: The Sat " << Sat << " was not found" << endl;
 	}
-	
+
 }
 
 

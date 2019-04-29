@@ -1,6 +1,7 @@
 
 #include "satellite.h"
 #include <fstream>
+#include <cmath>
 
 ALM_GPS almGps[_MAX_GPS_SAT_];
 int LS = 0;
@@ -52,11 +53,44 @@ void utc2gps(TIME_GPS *tgps, TIME tutc, const int LS)
 
 }
 
-double calc_dr(SAT_ID sat, TIME time)
+
+double calc_dr(SAT_ID sat, TIME_GPS time, double xyz_receiver[], double dxyz[])
 {
+  const double propagationTime = 73.0e-3;
+  double xyz_sat[3];
+  double R_rs[3];
+  double norm_R_rs;
   double dr = 0;
 
+  ALM_GPS *alm = &almGps[sat.num - 1];
 
+
+  time.tow -= propagationTime;
+
+  if (time.tow < 0)
+  {
+    time.tow += 604800;
+    time.week--;
+  }
+
+  alm->calc_XV();
+  alm->get_x(xyz_sat);
+
+
+  norm_R_rs = 0;
+  for (int k = 0; k < 3; k++)
+  {
+    R_rs[k] = xyz_sat[k] - xyz_receiver[k];
+    norm_R_rs += R_rs[k] * R_rs[k];
+  }
+  norm_R_rs = sqrt(norm_R_rs);
+
+  double tmp = 0;
+
+  for (int k = 0; k < 3; k++)
+    tmp += dxyz[k] * R_rs[k];
+
+  dr = - tmp / norm_R_rs;
 
   return dr;
 }
