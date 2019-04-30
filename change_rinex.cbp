@@ -4,13 +4,13 @@
 	<Project>
 		<Option title="change_rinex" />
 		<Option pch_mode="2" />
-		<Option compiler="gcc" />
+		<Option compiler="mingw" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/change_rinex" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="mingw" />
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
@@ -20,7 +20,7 @@
 				<Option output="bin/Release/change_rinex" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="mingw" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-g" />
@@ -37,11 +37,11 @@
 		<Unit filename="input_interface.cpp" />
 		<Unit filename="input_interface.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="rconst.h" />
 		<Unit filename="rinex.cpp" />
 		<Unit filename="rinex.h" />
 		<Unit filename="satellite.cpp" />
 		<Unit filename="satellite.h" />
+		<Unit filename="srns_const.h" />
 		<Unit filename="string/charstring.cpp" />
 		<Unit filename="string/charstring.h" />
 		<Extensions>

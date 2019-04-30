@@ -22,8 +22,6 @@ int main()
   double dxyz[3];                                                                                                       // смещение, которое нужно сделать (увод координат)
 	double xyz0[3];                                                                                                       // координаты потребителя. Пока беруться из входного rinex файла
 
-
-
   if (config_processing(fname_alm_gps, fname_alm_gln, fname_alm_rinex_in, fname_alm_rinex_out, dxyz))                   // читаем входные данные (обработка .inf файла)
       return 1;
 

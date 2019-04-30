@@ -6,7 +6,7 @@
 using namespace std;
 using namespace ALM_CONST;
 
-const GPS_CONST gpsConst = {3.986005e14, 7.2921151467e-5};
+const GPS_CONST ALM_CONST::gpsConst = {3.986005e14, 7.2921151467e-5};
 
 
 void ALM_GPS::calcPosition (int week_calc, double tow_calc)
@@ -14,10 +14,11 @@ void ALM_GPS::calcPosition (int week_calc, double tow_calc)
   double tk = (week_calc - this->week) * _SEC_WEEK_ + (tow_calc - this->t_oe);
   double Mk = this->M0 + this->n0 * tk;
   double Ek = Mk;
+  double Ek_old;
   do
   {
-    double Ek_old = Ek;
-    Ek = this->Mk + this->E * sin(Ek);
+    Ek_old = Ek;
+    Ek = Mk + this->E * sin(Ek);
   } while ( abs(Ek - Ek_old) < 1e-7 );
 
   double tmp_y = sqrt(1 - pow(this->E, 2)) * sin(Ek);
@@ -31,7 +32,7 @@ void ALM_GPS::calcPosition (int week_calc, double tow_calc)
   double xk1 = rk * cos(uk);
   double yk1 = rk * sin(uk);
 
-  double Wk = this->Om0 + (this-Om1 - gpsConst.OmE) * tk - gpsConst.OmE * this->t_oe;
+  double Wk = this->Om0 + (this->Om1 - gpsConst.OmE) * tk - gpsConst.OmE * this->t_oe;
 
   this->xyz[0] = xk1 * cos(Wk) - yk1 * cos(ik) * sin(Wk);
   this->xyz[1] = xk1 * sin(Wk) + yk1 * cos(ik) * cos(Wk);

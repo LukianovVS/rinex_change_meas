@@ -56,3 +56,55 @@
 	"charstring.h"
 	<cmath>
 
+1556618015 source:l:\science\prog\rinex_change_meas\almanac\cls_alm.cpp
+	"cls_Alm.h"
+	<fstream>
+	<iostream>
+	<cmath>
+
+1556613386 l:\science\prog\rinex_change_meas\almanac\cls_alm.h
+
+1556521517 source:l:\science\prog\rinex_change_meas\input_interface.cpp
+	"rinex.h"
+	<iostream>
+
+1556521517 l:\science\prog\rinex_change_meas\rinex.h
+	<fstream>
+
+1556620813 source:l:\science\prog\rinex_change_meas\main.cpp
+	<iostream>
+	<fstream>
+	"input_interface.h"
+	"satellite.h"
+	"rinex.h"
+
+1556179870 l:\science\prog\rinex_change_meas\input_interface.h
+
+1556618344 l:\science\prog\rinex_change_meas\satellite.h
+	"almanac/cls_Alm.h"
+
+1556621328 source:l:\science\prog\rinex_change_meas\rinex.cpp
+	<fstream>
+	<iostream>
+	<cstring>
+	<cctype>
+	"rinex.h"
+	"string/charstring.h"
+	"satellite.h"
+	"srns_const.h"
+
+1556521517 l:\science\prog\rinex_change_meas\string\charstring.h
+	<fstream>
+
+1556619006 l:\science\prog\rinex_change_meas\srns_const.h
+
+1556521517 source:l:\science\prog\rinex_change_meas\string\charstring.cpp
+	"charstring.h"
+	<cmath>
+
+1556622177 source:l:\science\prog\rinex_change_meas\satellite.cpp
+	"satellite.h"
+	<fstream>
+	<cmath>
+	<iostream>
+

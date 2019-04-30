@@ -8,6 +8,8 @@
 #include "rinex.h"
 #include "string/charstring.h"
 #include "satellite.h"
+#include "srns_const.h"
+
 
 using namespace std;
 
@@ -149,7 +151,6 @@ void RINEX_TYPE::getListOfTypes(char str[])
 
 void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[], double dxyz[])
 {
-
   int partOfBody = 0;
   char str[max_size_string];
   int Nsat = 0;
@@ -167,7 +168,7 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
     {
       fid_out << str << endl;
 
-      if (str[30] != '0')
+      if (str[28] != '0')
         continue;
 
       time.year   = 2000 + str2int(str +  1,  2);
@@ -177,7 +178,15 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
       time.m      =        str2int(str + 13,  2);
       time.sec    =      str2float(str + 16, 10);
 
-      utc2gps(time_gps, time, LS);
+      static int dbg = 1;
+      if (dbg == 1)
+      {
+        dbg = 0;
+        cout << time.day << "." << time.month << "." << time.year << endl;
+        cout << time.h   << ":" << time.m     << ":" << time.sec  << endl;
+      }
+
+      utc2gps(&time_gps, time, LS);
 
 
       Nsat = str2int(&str[30], 2);
@@ -211,7 +220,9 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
 
       for (int k_sat = 0; k_sat < Nsat; k_sat++)
       {
-        double dR = calc_dr(sat_list[k_sat], time_gps);
+        double dR  = calc_dr(sat_list[k_sat], time_gps, xyz0, dxyz);
+        double dL1 = dR * _GPS_RANGE_TO_CYCLES_L1_;
+        double dL2 = dR * _GPS_RANGE_TO_CYCLES_L2_;
 
         for (int k_type = 0; k_type < rinexType.getNumUsedTypes(); k_type++)
         {
@@ -236,17 +247,17 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
             case P1:
             case P2:
             {
-
+              meas += dR;
               break;
             }
             case L1:
             {
-
+              meas += dL1;
               break;
             }
             case L2:
             {
-
+              meas += dL2;
               break;
             }
 

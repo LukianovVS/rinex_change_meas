@@ -50,7 +50,7 @@ private:
 	double M0;
 	//  next parameters does not readed of the almanac
 	double A;
-	double n0
+	double n0;
 public:
 	void calcPosition(int week, double tow);
 	void read_alm(char *fname, int N);

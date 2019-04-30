@@ -40,7 +40,7 @@ typedef struct
 void utc2gps(TIME_GPS *tgps, TIME tutc, const int LS);
 
 void read_almanac (char fname_alm_gps[], char fname_alm_gln[]);
-double calc_dr(SAT_ID sat, TIME_GPS time);
+double calc_dr(SAT_ID sat, TIME_GPS time, double xyz_receiver[], double dxyz[]);
 
 
 #endif // SATELLITE_H
