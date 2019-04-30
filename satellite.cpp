@@ -5,7 +5,7 @@
 
 // DBG
 #include <iostream>
-int dbg_flag = 1;
+static int dbg_flag = 1;
 //
 
 ALM_GPS almGps[_MAX_GPS_SAT_];
@@ -24,26 +24,28 @@ void read_almanac (char fname_alm_gps[], char fname_alm_gln[])
 }
 
 
+
+
 void utc2gps(TIME_GPS *tgps, TIME tutc, const int LS)
 {
   const int dayBeginYear[] = {0, 366, 731, 1096};
-  int J = ((tutc.year - 1980) % 4) + 1;
+  int J = ((tutc.year - 1980) % 4);
   int C = dayBeginYear[J];
 
-  int feb = (J == 1)? 29 : 28;
+  int feb = (J == 0)? 29 : 28;
   int mond[12] = {31, feb, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-  int Dayin4 = tutc.day + C - 1;                                                                              // прошло дней с начала последнего 4-хлетия
-  for (int k = 1; k < (tutc.month - 1); k++)
-    Dayin4 += mond[k - 1];
+  int Dayin4 = C + (tutc.day - 1);                                                                              // прошло дней с начала последнего 4-хлетия
+  for (int k = 0; k < (tutc.month - 1); k++)
+    Dayin4 += mond[k];
 
   double ToD = tutc.h * 3600 + tutc.m * 60 + tutc.sec;
 
-  int N4 = (tutc.year - 1980 - (J - 1)) / 4;
+  int N4 = (tutc.year - 1980 - J) / 4;
   int Days = N4 * 1461 - 5 + Dayin4;
 
   tgps->week = Days / 7;
-  tgps->tow  = (Days % 7) * 86400 + ToD - LS;
+  tgps->tow  = (Days % 7) * 86400 + ToD - LS * 0;
 
   if (tgps->tow > 604800)
   {
@@ -55,6 +57,7 @@ void utc2gps(TIME_GPS *tgps, TIME tutc, const int LS)
     tgps->tow += 604800;
     tgps->week --;
   }
+
 
 }
 

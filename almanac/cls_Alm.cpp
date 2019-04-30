@@ -6,6 +6,11 @@
 using namespace std;
 using namespace ALM_CONST;
 
+// DBG
+static int dbg_alm = 1;
+//
+
+
 const GPS_CONST ALM_CONST::gpsConst = {3.986005e14, 7.2921151467e-5};
 
 
@@ -37,6 +42,19 @@ void ALM_GPS::calcPosition (int week_calc, double tow_calc)
   this->xyz[0] = xk1 * cos(Wk) - yk1 * cos(ik) * sin(Wk);
   this->xyz[1] = xk1 * sin(Wk) + yk1 * cos(ik) * cos(Wk);
   this->xyz[2] = yk1 * sin(ik);
+
+  if (dbg_alm)
+  {
+    dbg_alm = 0;
+
+    cout << "tk: " << tk << endl;
+    cout << "Mk: " << Mk << endl;
+    cout << "Ek: " << Ek << endl;
+
+    cout << "vk: " << vk << endl;
+    cout << "xk1: " << xk1 << endl;
+    cout << "yk1: " << yk1 << endl;
+  }
 
 }
 
@@ -94,7 +112,7 @@ void ALM_GPS::read_alm(char *fname, int Sat)
 						fid >> this->M0;
 
 						this->A  = this->SQRT_A * this->SQRT_A;
-						this->n0 = gpsConst.M / pow(this->A, 3);
+						this->n0 = sqrt( gpsConst.M / pow(this->A, 3) );
 					}
 					break;
 				}
