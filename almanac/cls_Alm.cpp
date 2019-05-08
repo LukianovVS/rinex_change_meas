@@ -1,14 +1,14 @@
 #include "cls_Alm.h"
 #include <fstream>
 #include <iostream>
+
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 using namespace std;
 using namespace ALM_CONST;
 
-// DBG
-static int dbg_alm = 1;
-//
+
 
 
 const GPS_CONST ALM_CONST::gpsConst = {3.986005e14, 7.2921151467e-5};
@@ -24,7 +24,7 @@ void ALM_GPS::calcPosition (int week_calc, double tow_calc)
   {
     Ek_old = Ek;
     Ek = Mk + this->E * sin(Ek);
-  } while ( abs(Ek - Ek_old) < 1e-7 );
+  } while ( abs(Ek - Ek_old) > 1e-7 );
 
   double tmp_y = sqrt(1 - pow(this->E, 2)) * sin(Ek);
   double tmp_x = cos(Ek) - this->E;
@@ -37,24 +37,13 @@ void ALM_GPS::calcPosition (int week_calc, double tow_calc)
   double xk1 = rk * cos(uk);
   double yk1 = rk * sin(uk);
 
-  double Wk = this->Om0 + (this->Om1 - gpsConst.OmE) * tk - gpsConst.OmE * this->t_oe;
+  double Wk = this->Om0 + (this->Om1 /*/ M_PI*/ - gpsConst.OmE) * tk - gpsConst.OmE * this->t_oe;                           // !!! "/ MPI" скорее всего  это ошибка
 
   this->xyz[0] = xk1 * cos(Wk) - yk1 * cos(ik) * sin(Wk);
   this->xyz[1] = xk1 * sin(Wk) + yk1 * cos(ik) * cos(Wk);
   this->xyz[2] = yk1 * sin(ik);
 
-  if (dbg_alm)
-  {
-    dbg_alm = 0;
 
-    cout << "tk: " << tk << endl;
-    cout << "Mk: " << Mk << endl;
-    cout << "Ek: " << Ek << endl;
-
-    cout << "vk: " << vk << endl;
-    cout << "xk1: " << xk1 << endl;
-    cout << "yk1: " << yk1 << endl;
-  }
 
 }
 
@@ -95,6 +84,8 @@ void ALM_GPS::read_alm(char *fname, int Sat)
 						fid >> this->af0;
 						fid >> this->af1;
 						fid >> this->Om1;
+
+						this->Om1 *= M_PI;
 					}
 					break;
 				}
@@ -111,6 +102,10 @@ void ALM_GPS::read_alm(char *fname, int Sat)
 						fid >> this->SQRT_A;
 						fid >> this->M0;
 
+            this->Om0 *= M_PI;
+            this->i   *= M_PI;
+            this->w   *= M_PI;
+            this->M0  *= M_PI;
 						this->A  = this->SQRT_A * this->SQRT_A;
 						this->n0 = sqrt( gpsConst.M / pow(this->A, 3) );
 					}

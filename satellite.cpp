@@ -3,10 +3,7 @@
 #include <fstream>
 #include <cmath>
 
-// DBG
-#include <iostream>
-static int dbg_flag = 1;
-//
+
 
 ALM_GPS almGps[_MAX_GPS_SAT_];
 int LS = 0;
@@ -104,22 +101,5 @@ double calc_dr(SAT_ID sat, TIME_GPS time, double xyz_receiver[], double dxyz[])
   dr = - tmp / norm_R_rs;
 
 
-  if(dbg_flag == 1)
-  {
-    dbg_flag = 0;
-    cout << "DBG data:" << endl;
-
-    cout << time.week << "  " << time.tow << endl << "sat: ";
-    for (int k = 0; k < 3; k++) cout << xyz_sat[k] << "  ";
-    cout << std::endl << "receiver: ";
-    for (int k = 0; k < 3; k++) std::cout << xyz_receiver[k] << "  ";
-    cout << std::endl << "dx: ";
-    for (int k = 0; k < 3; k++) std::cout << dxyz[k] << "  ";
-    std::cout << std::endl << "R_us: ";
-    for (int k = 0; k < 3; k++) std::cout << R_rs[k] << "  ";
-    std::cout << std::endl << "norm_dR: " << norm_R_rs << std::endl;
-    std::cout << "scolar: " << tmp << std::endl;
-    std::cout << "dR: " << dr << std::endl;
-  }
   return dr;
 }
