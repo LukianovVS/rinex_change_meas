@@ -36,18 +36,18 @@
 	"satellite.h"
 	"srns_const.h"
 
-1557309591 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\almanac\cls_alm.cpp
+1557320919 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\almanac\cls_alm.cpp
 	"cls_Alm.h"
 	<fstream>
 	<iostream>
 	<cmath>
 
-1557304195 l:\documentation\postgraduatecourse\prog\cpp_change_meas\almanac\cls_alm.h
+1557321198 l:\documentation\postgraduatecourse\prog\cpp_change_meas\almanac\cls_alm.h
 
 1557304195 l:\documentation\postgraduatecourse\prog\cpp_change_meas\satellite.h
 	"almanac/cls_Alm.h"
 
-1557309626 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\satellite.cpp
+1557321077 source:l:\documentation\postgraduatecourse\prog\cpp_change_meas\satellite.cpp
 	"satellite.h"
 	<fstream>
 	<cmath>

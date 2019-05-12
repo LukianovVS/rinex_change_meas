@@ -84,39 +84,39 @@ int config_processing(char fname_alm_gps[], char fname_alm_gln[], char fname_rin
   {
       switch (n_err)
       {
-      case 1:
-          {
-      error_fopen(fname_config);
-              break;
-          }
-      case 2:
-    {
-      error_fopen(fname_alm_gps);
-              break;
-    }
-  case 3:
-    {
-      error_fopen(fname_alm_gln);
-              break;
-    }
-  case 4:
-    {
-      error_fopen(fname_rinex_in);
-              break;
-    }
-  case 5:
-    {
-      error_fopen(fname_rinex_out);
-              break;
-    }
-      default:
-          {
-              cout << "Error: Unknown error. Check " << fname_config << " ." << endl;
-          }
+        case 1:
+        {
+          error_fopen(fname_config);
+          break;
+        }
+        case 2:
+        {
+          error_fopen(fname_alm_gps);
+          break;
+        }
+        case 3:
+        {
+          error_fopen(fname_alm_gln);
+          break;
+        }
+        case 4:
+        {
+          error_fopen(fname_rinex_in);
+          break;
+        }
+        case 5:
+        {
+          error_fopen(fname_rinex_out);
+          break;
+        }
+        default:
+        {
+          cout << "Error: Unknown error. Check " << fname_config << " ." << endl;
+        }
       }
 
-      fid.close();
-  return n_err;
+    fid.close();
+    return n_err;
   }
   fid.close();
 

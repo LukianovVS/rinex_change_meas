@@ -6,6 +6,8 @@
 
 
 ALM_GPS almGps[_MAX_GPS_SAT_];
+ALM_GLN almGln[_MAX_GLN_SAT_];
+
 int LS = 0;
 
 using namespace std;
@@ -15,6 +17,11 @@ void read_almanac (char fname_alm_gps[], char fname_alm_gln[])
   for (int k = 0; k < _MAX_GPS_SAT_; k++)
   {
     almGps[k].read_alm(fname_alm_gps, k + 1);
+  }
+
+  for (int k = 0; k < _MAX_GLN_SAT_; k++)
+  {
+    almGln[k].read_alm(fname_alm_gln, k + 1);
   }
 
   return;
@@ -54,8 +61,6 @@ void utc2gps(TIME_GPS *tgps, TIME tutc, const int LS)
     tgps->tow += 604800;
     tgps->week --;
   }
-
-
 }
 
 
