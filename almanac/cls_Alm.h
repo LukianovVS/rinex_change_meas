@@ -31,7 +31,6 @@ protected:
 	double xyz[3];
 	double V[3];
 public:
-  virtual void calcPosition(int week, double tow) = 0;
 	virtual void read_alm(char *fname, int N) = 0;
 // 															// interface
 	void inline get_x(double *x) {x[0] = xyz[0]; x[1] = xyz[1]; x[2] = xyz[2];}
@@ -62,11 +61,14 @@ private:
 	double A;
 	double n0;
 public:
-	void calcPosition(int week, double tow);
+	void calcPosition (const int week, const double tow);
 	void read_alm(char *fname, int N);
 
 };
 
+
+
+void utc2gln(int &N4, int &N0, double &ti, const int day, const int month, const int year, const double sec);
 
 class ALM_GLN : public BASE_ALM
 {
@@ -91,17 +93,17 @@ private:
   // +++
   double i;
 
-  double week;
-  double tow;
+  int Na4;
+  int Na;
+  double ta;
 
 public:
-  void calcPosition(int week, double tow);
+  void calcPosition(const int N4, const int N0, const double ti);
   void read_alm(char *fname, int N);
+
+  inline int get_ch_freq() {return this->ch_freq;}
 
 };
 
 
-inline void dmyhms2WnTow (int *wn, double *t, int c_day, int c_month, int c_year, double c_h, double c_min, double c_sec)
-{
-  dmys2WnTow(wn, t, c_day, c_month, c_year, c_h * 3600 + c_min * 60 + c_sec);
-}
+

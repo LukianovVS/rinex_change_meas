@@ -2,7 +2,7 @@
 #include "satellite.h"
 #include <fstream>
 #include <cmath>
-
+#include "srns_const.h"
 
 
 ALM_GPS almGps[_MAX_GPS_SAT_];
@@ -66,28 +66,56 @@ void utc2gps(TIME_GPS *tgps, TIME tutc, const int LS)
 
 
 
-double calc_dr(SAT_ID sat, TIME_GPS time, double xyz_receiver[], double dxyz[])
+void calc_dr(double &dR, double &dL1, double dL2, const SAT_ID sat, TIME_GPS t_gps, TIME_GLN t_gln, const double xyz_receiver[], const double dxyz[])
 {
 
   const double propagationTime = 73.0e-3;
   double xyz_sat[3];
   double R_rs[3];
   double norm_R_rs;
-  double dr = 0;
 
-  ALM_GPS *alm = &almGps[sat.num - 1];
+  double RtoL1, RtoL2;
 
 
-  time.tow -= propagationTime;
-
-  if (time.tow < 0)
+  if (sat.sys == 'G')
   {
-    time.tow += 604800;
-    time.week--;
+    ALM_GPS *alm = &almGps[sat.num - 1];
+    t_gps.tow -= propagationTime;
+    if (t_gps.tow < 0)
+    {
+      t_gps.tow += 604800;
+      t_gps.week--;
+    }
+    alm->calcPosition(t_gps.week, t_gps.tow);
+    alm->get_x(xyz_sat);
+    RtoL1 =_GPS_RANGE_TO_CYCLES_L1_;
+    RtoL2 =_GPS_RANGE_TO_CYCLES_L2_;
+  }
+  else if (sat.sys == 'R')
+  {
+    ALM_GLN *alm = &almGln[sat.num - 1];
+    t_gln.sec -= propagationTime;
+    if (t_gln.sec < 0)
+    {
+      t_gln.sec += 24 * 3600;
+      t_gln.N0--;
+
+      if (t_gln.N0 == 0)
+      {
+        t_gln.N0 = 366 + 365 * 3;
+        t_gln.N4--;
+      }
+    }
+    alm->calcPosition(t_gln.N4, t_gln.N0, t_gln.sec);
+    alm->get_x(xyz_sat);
+
+    int ch_freq = alm->get_ch_freq();
+
+    RtoL1 = (_GLN_FREQ0_L1_ + ch_freq * _GLN_DFREQ_L1_) / _C_;
+    RtoL1 = (_GLN_FREQ0_L2_ + ch_freq * _GLN_DFREQ_L2_) / _C_;
+
   }
 
-  alm->calcPosition(time.week, time.tow);
-  alm->get_x(xyz_sat);
 
 
   norm_R_rs = 0;
@@ -103,8 +131,8 @@ double calc_dr(SAT_ID sat, TIME_GPS time, double xyz_receiver[], double dxyz[])
   for (int k = 0; k < 3; k++)
     tmp += dxyz[k] * R_rs[k];
 
-  dr = - tmp / norm_R_rs;
+  dR = - tmp / norm_R_rs;
+  dL1 = dR * RtoL1;
+  dL2 = dR * RtoL2;
 
-
-  return dr;
 }

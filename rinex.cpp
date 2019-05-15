@@ -157,6 +157,7 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
   SAT_ID sat_list[_MAX_SAT_];
   TIME time;
   TIME_GPS time_gps;
+  TIME_GLN time_gln;
 
   fid_out.unsetf(ios::floatfield);
   fid_out.setf(ios::fixed);
@@ -187,7 +188,7 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
       }
 
       utc2gps(&time_gps, time, LS);
-
+      utc2gln(time_gln.N4, time_gln.N0, time_gln.sec, time.day, time.month, time.year, (time.h * 60  + time.m) * 60 + time.sec);
 
       Nsat = str2int(&str[30], 2);
 
@@ -220,9 +221,11 @@ void read_body_rinex(std::ofstream &fid_out, std::ifstream &fid_in, double xyz0[
 
       for (int k_sat = 0; k_sat < Nsat; k_sat++)
       {
-        double dR  = calc_dr(sat_list[k_sat], time_gps, xyz0, dxyz);
-        double dL1 = dR * _GPS_RANGE_TO_CYCLES_L1_;
-        double dL2 = dR * _GPS_RANGE_TO_CYCLES_L2_;
+        double dR;
+        double dL1;
+        double dL2;
+        calc_dr(dR, dL1, dL2, sat_list[k_sat], time_gps, time_gln, xyz0, dxyz);
+
 
         for (int k_type = 0; k_type < rinexType.getNumUsedTypes(); k_type++)
         {
