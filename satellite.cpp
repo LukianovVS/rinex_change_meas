@@ -112,7 +112,7 @@ void calc_dr(double &dR, double &dL1, double dL2, const SAT_ID sat, TIME_GPS t_g
     int ch_freq = alm->get_ch_freq();
 
     RtoL1 = (_GLN_FREQ0_L1_ + ch_freq * _GLN_DFREQ_L1_) / _C_;
-    RtoL1 = (_GLN_FREQ0_L2_ + ch_freq * _GLN_DFREQ_L2_) / _C_;
+    RtoL2 = (_GLN_FREQ0_L2_ + ch_freq * _GLN_DFREQ_L2_) / _C_;
 
   }
 
