@@ -66,7 +66,7 @@ void utc2gps(TIME_GPS *tgps, TIME tutc, const int LS)
 
 
 
-void calc_dr(double &dR, double &dL1, double dL2, const SAT_ID sat, TIME_GPS t_gps, TIME_GLN t_gln, const double xyz_receiver[], const double dxyz[])
+void calc_dr(double &dR, double &dL1, double &dL2, const SAT_ID sat, TIME_GPS t_gps, TIME_GLN t_gln, const double xyz_receiver[], const double dxyz[])
 {
 
   const double propagationTime = 73.0e-3;
