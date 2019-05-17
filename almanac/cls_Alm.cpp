@@ -40,7 +40,7 @@ inline double pow_3 (double x)
 //
 
 const GPS_CONST ALM_CONST::gpsConst = {3.986005e14, 7.2921151467e-5};
-const GLN_CONST ALM_CONST::glnConst = {.i0 = 63.0 * M_PI / 180.0, .C_20 = -1082.62575e-6, .a_earth = 6378.136e3, .w_earth = 0.7292115e-4, .nu_earth = 398600.4418e9, .T_mean = 43200};
+const GLN_CONST ALM_CONST::glnConst = {.i0 = 63.0 * M_PI / 180.0, .C_20 = 1082.62575e-6, .a_earth = 6378.136e3, .w_earth = 0.7292115e-4, .nu_earth = 398600.4418e9, .T_mean = 43200};
 
 void ALM_GPS::calcPosition (const int week_calc, const double tow_calc)
 {
@@ -162,7 +162,7 @@ void ALM_GPS::read_alm(char *fname, int Sat)
 
 
 
-void utc2gln(int &N4, int &N0, double &ti, const int day, const int month, const int year, const double sec)
+void utc2gln(int &N4, int &N0, double &ti, const int day, const int month, const int year, const double sec, int dh)
 {
   const int DayLen = 86400;
 
@@ -180,7 +180,7 @@ void utc2gln(int &N4, int &N0, double &ti, const int day, const int month, const
   ti = sec;
 	N4 = (year - 1996 - J) / 4 + 1;
 
-	ti += 3600 * 3;	      			                                                                                //mdv = utc + 3 hr
+	ti += 3600 * dh;	      			                                                                                //mdv = utc + 3 hr
 
 	if (ti >= DayLen) {
 		ti = ti - DayLen;
@@ -199,7 +199,7 @@ void ALM_GLN::calcPosition (const int N4, const int N0, const double ti)
   double tmp = (N4 != 27) ? 1461.0 : 1460.0;
 	int dNa = N0 - this->Na - (int) round((N0 - this->Na) / tmp) * tmp;
 
-	float dt = dNa * 86400 + (ti - this->ta);
+	double dt = dNa * 86400 + (ti - this->ta);
 	int W = (dt / (glnConst.T_mean + this->dT0));
 	double Tdr = glnConst.T_mean + this->dT0 + (2 * W + 1) * this->dT1;
 	double n = 2.0 * M_PI / Tdr;
@@ -214,9 +214,9 @@ void ALM_GLN::calcPosition (const int N4, const int N0, const double ti)
     tmp = 1.5 * glnConst.C_20 * pow_2( glnConst.a_earth / p1 ) *
             ( (2. - 2.5 * pow_2(sin(this->i)) ) * pow_3d2(1. - pow_2(this->E)) / pow_2(1. + this->E * cos(this->w)) +
               pow_3(1. + this->E * cos(this->w)) / (1. - pow_2(this->E)) );
-    double T_osk = Tdr / (1. + tmp);
+    double T_osk = Tdr / (1. - tmp);
     a = pow_1d3( pow_2(T_osk / _2_PI_) * glnConst.nu_earth);
-  } while ( abs(a - a_old) > 1. );
+  } while ( abs(a - a_old) > 0.01 );
 
   double p = a * (1. - pow_2(this->E));
 
@@ -361,7 +361,7 @@ void ALM_GLN::read_alm(char *fname, int Sat)
 						fid >> this->dt_sat;
 
 						this->Health = 1 - this->Health;                                                                            // делаем признак здоровья как у GPS
-            utc2gln(this->Na4, this->Na, this->ta, this->day, this->month, this->year, this->sec);
+            utc2gln(this->Na4, this->Na, this->ta, this->day, this->month, this->year, this->sec, 0);
 					}
 					break;
 				}

@@ -68,7 +68,7 @@ public:
 
 
 
-void utc2gln(int &N4, int &N0, double &ti, const int day, const int month, const int year, const double sec);
+void utc2gln(int &N4, int &N0, double &ti, const int day, const int month, const int year, const double sec, int dh = 3);
 
 class ALM_GLN : public BASE_ALM
 {
