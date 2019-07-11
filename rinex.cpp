@@ -28,12 +28,12 @@ struct STR_RINEX
 
 #define _END_OF_HEADER_ ("END OF HEADER")
 #define _APPROX_POSITION_XYZ_ ("APPROX POSITION XYZ")
-#define _TYPES_OF_OBSERV_ ("TYPES OF OBSERV")
+#define _TYPES_OF_OBSERV_ ("# / TYPES OF OBSERV ")
 #define _LEAP_SECONDS_ ("LEAP SECONDS")
 
 bool str_rinex_compare(STR_RINEX str1, STR_RINEX str2)
 {
-  if (!strcmp(&str1.str[str1.len - str2.len], str2.str))
+  if (!memcmp(&str1.str[60], str2.str, str2.len))
     return true;
   else
     return false;
